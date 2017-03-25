@@ -2,7 +2,7 @@
 --[[-----------------------------------------------------------------------//
 * 
 * Created by bamq. (https://steamcommunity.com/id/bamq)
-* Garry's Mod - GModEggs Easter Eggs Sytem.
+* Garry's Mod - GModEggs Easter Eggs System.
 * 24 March 2017
 * 
 * Originally made for The Drunken T's TTT server.
