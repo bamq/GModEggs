@@ -11,3 +11,6 @@ A simple text chat-based easter eggs sytem for Garry's Mod.
 * Download the latest release from the release page.
 * Extract to your addons folder on the server.
 * Restart your server.
+
+## Contributing:
+Please feel free to make pull requests and suggest any changes you want. However, I would appreciate that you keep the same code formatting and style as seen throughout this addon.
