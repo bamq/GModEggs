@@ -3,7 +3,7 @@
 * 
 * Created by bamq. (https://steamcommunity.com/id/bamq)
 * Garry's Mod - GModEggs Easter Eggs System.
-* 24 March 2017
+* Updated 25 March 2017
 * 
 * Originally made for The Drunken T's TTT server.
 * https://steamcommunity.com/groups/thedrunkent
@@ -56,9 +56,7 @@ local m = {
 net.Receive( "GEggs_Message", function()
 	local message = net.ReadString()
 
-	local ch = {}
-	table.insert( ch, m.color )
-	table.insert( ch, m.text )
+	local ch = { m.color, m.text }
 	table.insert( ch, Color( 255, 255, 255 ) )
 	table.insert( ch, message )
 	chat.AddText( unpack( ch ) )
@@ -67,9 +65,7 @@ end )
 net.Receive( "GEggs_DiscoverNotification", function()
 	local egg = net.ReadString()
 
-	local ch = {}
-	table.insert( ch, m.color )
-	table.insert( ch, m.text )
+	local ch = { m.color, m.text }
 	table.insert( ch, Color( 255, 255, 0 ) )
 	table.insert( ch, "Congratulations! You have found easter egg " )
 	table.insert( ch, Color( 255, 255, 255 ) )
@@ -77,7 +73,7 @@ net.Receive( "GEggs_DiscoverNotification", function()
 	table.insert( ch, Color( 255, 255, 0 ) )
 	table.insert( ch, "!" )
 	if GEggs.Config.UsePointShop then
-		table.insert( ch, "You've earned " )
+		table.insert( ch, " You've earned " )
 		table.insert( ch, Color( 255, 255, 255 ) )
 		table.insert( ch, tostring( GEggs.Config.PointsForEgg ) .. " " )
 		table.insert( ch, Color( 255, 255, 0 ) )

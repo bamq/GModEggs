@@ -3,7 +3,7 @@
 * 
 * Created by bamq. (https://steamcommunity.com/id/bamq)
 * Garry's Mod - GModEggs Easter Eggs System.
-* 24 March 2017
+* Updated 25 March 2017
 * 
 * Originally made for The Drunken T's TTT server.
 * https://steamcommunity.com/groups/thedrunkent
@@ -42,7 +42,7 @@ if not file.IsDir( "gmodeggs/playerdata", "DATA" ) then
 end
 
 function GEggs.PlayerFile_Initialize( ply )
-	if not file.Exists( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt.", "DATA" ) then
+	if not file.Exists( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt", "DATA" ) then
 		file.Write( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt", util.TableToJSON( {} ) )
 	end
 end
@@ -65,10 +65,9 @@ function PLAYER:GEggs_SendDiscoverNotification( egg )
 end
 
 function PLAYER:GEggs_SendEggsList()
-	local pEggs = GEggs.PlayerFile_GetTable( self )
 	timer.Simple( 0.5, function()
 		net.Start( "GEggs_RequestList" )
-		net.WriteTable( pEggs )
+		net.WriteTable( GEggs.PlayerFile_GetTable( self ) )
 		net.Send( self )
 	end )
 end

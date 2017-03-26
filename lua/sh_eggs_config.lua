@@ -3,7 +3,7 @@
 * 
 * Created by bamq. (https://steamcommunity.com/id/bamq)
 * Garry's Mod - GModEggs Easter Eggs System.
-* 24 March 2017
+* Updated 25 March 2017
 * 
 * Originally made for The Drunken T's TTT server.
 * https://steamcommunity.com/groups/thedrunkent
@@ -27,15 +27,18 @@ GEggs.Config = GEggs.Config or {}
 
 -- /// CONFIG /// --
 
--- GEggs.Config.UsePointShop :				Should we award PointShop points for discovering easter eggs?
---											Will cause an error if PointShop is not installed.
+-- GEggs.Config.UsePointShop:
+--	Should we award PointShop points for discovering easter eggs?
+--	Will cause an error if PointShop is not installed.
 GEggs.Config.UsePointShop					= false
 
--- GEggs.Config.PointsForEgg :				If we are using PointShop, how many points should be awarded?
+-- GEggs.Config.PointsForEgg:
+--	If we are using PointShop, how many points should be awarded?
 GEggs.Config.PointsForEgg					= 250
 
--- GEggs.Config.TTT_ActiveRoundDisable :	Disables the ability to discover easter eggs during an active
---											round in TTT, unless the player is dead or spectating.
+-- GEggs.Config.TTT_ActiveRoundDisable:
+--	Disables the ability to discover easter eggs during an active
+--	round in TTT, unless the player is dead or spectating.
 GEggs.Config.TTT_ActiveRoundDisable			= true
 
 if SERVER then
