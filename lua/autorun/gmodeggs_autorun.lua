@@ -3,7 +3,7 @@
 * 
 * Created by bamq. (https://steamcommunity.com/id/bamq)
 * Garry's Mod - GModEggs Easter Eggs System.
-* 24 March 2017
+* Updated 25 March 2017
 * 
 * Originally made for The Drunken T's TTT server.
 * https://steamcommunity.com/groups/thedrunkent
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------]]--
 
 GEggs = {}
-GEggs.VERSION = "1.0"
+GEggs.VERSION = "1.1"
 
 if SERVER then
 	include( "sv_eggs.lua" )
@@ -32,6 +32,6 @@ else
 	include( "cl_eggs.lua" )
 end
 
-MsgN( "GModEggs v" .. GEggs.VERSION .. " Initialized. Created by bamq." )
+MsgN( "GModEggs v" .. GEggs.VERSION .. " initialized. Created by bamq." )
 
 -- Created by bamq.
