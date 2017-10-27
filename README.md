@@ -1,5 +1,6 @@
 # GModEggs
 A simple text chat-based easter eggs sytem for Garry's Mod.
+This is a server-side addon.
 
 ## Features:
 * The system checks if a player has entered one of the pre-determined easter eggs in chat. If the string matches an easter egg, the player will be notified that they discovered an easter egg and, if enabled, will be rewarded PointShop points (requires PointShop to be installed). You can also configure how many points are awarded.
@@ -13,4 +14,4 @@ A simple text chat-based easter eggs sytem for Garry's Mod.
 * Restart your server.
 
 ## Contributing:
-Please feel free to make pull requests and suggest any changes you want. However, I would appreciate that you keep the same code formatting and style as seen throughout this addon.
+Please read the CONTRIBUTING.md file for information on contributing to the project.

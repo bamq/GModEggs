@@ -1,14 +1,14 @@
 
 --[[-----------------------------------------------------------------------//
 * 
-* Created by bamq. (https://steamcommunity.com/id/bamq)
-* Garry's Mod - GModEggs Easter Eggs System.
-* Updated 25 March 2017
-* 
-* Originally made for The Drunken T's TTT server.
-* https://steamcommunity.com/groups/thedrunkent
+* GModEggs
+* Chat-based easter eggs system for Garry's Mod
 *
-* Features:
+* Created by bamq - https://steamcommunity.com/id/bamq
+* 27 October 2017
+* GitHub: https://github.com/bamq/GModEggs
+*
+* Addon features:
 * - Typing specific phrases in chat will trigger the matching easter egg to
 * be discovered. If enabled, PointShop points will be awarded.
 * - Player data is stored on the server in each player's own text file. This
@@ -20,11 +20,21 @@
 * displayed in a Derma menu.
 * - There are various configuration options available. These are located in
 * the "sh_eggs_config.lua" file.
+*
+//-----------------------------------------------------------------------]]--
+
+--[[-----------------------------------------------------------------------//
+*
+* GModEggs
+* 
+* gmodeggs.lua
+* The autorun script for the addon.
+* Sets up stuff before the rest of the addon is run.
 * 
 //-----------------------------------------------------------------------]]--
 
 GEggs = {}
-GEggs.VERSION = "1.1"
+GEggs.VERSION = "1.1.1"
 
 if SERVER then
 	include( "sv_eggs.lua" )
@@ -33,5 +43,3 @@ else
 end
 
 MsgN( "GModEggs v" .. GEggs.VERSION .. " initialized. Created by bamq." )
-
--- Created by bamq.

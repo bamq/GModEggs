@@ -1,28 +1,14 @@
 
 --[[-----------------------------------------------------------------------//
 * 
-* Created by bamq. (https://steamcommunity.com/id/bamq)
-* Garry's Mod - GModEggs Easter Eggs System.
-* Updated 25 March 2017
+* GModEggs
 * 
-* Originally made for The Drunken T's TTT server.
-* https://steamcommunity.com/groups/thedrunkent
-*
-* Features:
-* - Typing specific phrases in chat will trigger the matching easter egg to
-* be discovered. If enabled, PointShop points will be awarded.
-* - Player data is stored on the server in each player's own text file. This
-* file is created in garrysmod\data\gmodeggs\playerdata when the player
-* discovers an easter egg. The name of the text file will be the player's
-* Steam Community ID (SteamID64)
-* Using the "!myeggs" command, a player may request their list of discovered
-* easter eggs. The data is sent from the server to the player and is
-* displayed in a Derma menu.
-* - There are various configuration options available. These are located in
-* the "sh_eggs_config.lua" file.
+* sv_eggs.lua
+* Server-side functions.
 * 
 //-----------------------------------------------------------------------]]--
 
+-- Send the client files to the client.
 AddCSLuaFile( "cl_eggs.lua" )
 AddCSLuaFile( "sh_eggs_config.lua" )
 
@@ -32,31 +18,39 @@ util.AddNetworkString( "GEggs_DiscoverNotification" )
 util.AddNetworkString( "GEggs_Message" )
 util.AddNetworkString( "GEggs_RequestList" )
 
+-- Get the Player metatable so we can add our own functions.
 local PLAYER = FindMetaTable( "Player" )
 
+-- Make sure our directories exist.
 if not file.IsDir( "gmodeggs", "DATA" ) then
 	file.CreateDir( "gmodeggs" )
 end
+
 if not file.IsDir( "gmodeggs/playerdata", "DATA" ) then
 	file.CreateDir( "gmodeggs/playerdata" )
 end
 
+-- Init a player's text file.
 function GEggs.PlayerFile_Initialize( ply )
 	if not file.Exists( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt", "DATA" ) then
 		file.Write( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt", util.TableToJSON( {} ) )
 	end
 end
 
+-- Write the player's data to their file using JSON.
 function GEggs.PlayerFile_WriteTable( ply, tbl )
 	file.Write( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt", util.TableToJSON( tbl ) )
 end
 
+-- Get the player's easter egg table from their file.
 function GEggs.PlayerFile_GetTable( ply )
 	GEggs.PlayerFile_Initialize( ply )
 	return util.JSONToTable( file.Read( "gmodeggs/playerdata/" .. ply:SteamID64() .. ".txt", "DATA" ) )
 end
 
+-- Let the client know they discovered an easter egg.
 function PLAYER:GEggs_SendDiscoverNotification( egg )
+	-- Wait just a little bit.
 	timer.Simple( 0.5, function()
 		net.Start( "GEggs_DiscoverNotification" )
 		net.WriteString( egg )
@@ -64,6 +58,7 @@ function PLAYER:GEggs_SendDiscoverNotification( egg )
 	end )
 end
 
+-- Send the player's easter egg list to the client.
 function PLAYER:GEggs_SendEggsList()
 	timer.Simple( 0.5, function()
 		net.Start( "GEggs_RequestList" )
@@ -72,6 +67,7 @@ function PLAYER:GEggs_SendEggsList()
 	end )
 end
 
+-- A generic message sender.
 function PLAYER:GEggs_SendGenericMessage( message )
 	timer.Simple( 0.5, function()
 		net.Start( "GEggs_Message" )
@@ -80,52 +76,69 @@ function PLAYER:GEggs_SendGenericMessage( message )
 	end )
 end
 
+-- Check if a player has already discovered an easter egg.
 function PLAYER:GEggs_HasDiscoveredEgg( egg )
 	return table.HasValue( GEggs.PlayerFile_GetTable( self ), egg )
 end
 
+-- Add an easter egg to the player's discovered list.
 function PLAYER:GEggs_DiscoverEgg( egg )
 	if self:GEggs_HasDiscoveredEgg( egg ) then
 		self:GEggs_SendGenericMessage( "You have already found this easter egg!" )
+
 		return
 	end
 
 	local pEggs = GEggs.PlayerFile_GetTable( self )
+
 	table.insert( pEggs, egg )
 	GEggs.PlayerFile_WriteTable( self, pEggs )
 
 	self:GEggs_SendDiscoverNotification( egg )
+
 	if GEggs.Config.UsePointShop then
 		self:PS_GivePoints( GEggs.Config.PointsForEgg )
 	end
 end
 
+-- Remove an easter egg from a player's list of discovered easter eggs.
+-- Isn't used anywhere yet but I guess it could be useful.
 function PLAYER:GEggs_UndiscoverEgg( egg )
 	if not self:GEggs_HasDiscoveredEgg( egg ) then return end
 
 	local pEggs = GEggs.PlayerFile_GetTable( self )
+
 	table.RemoveByValue( pEggs, egg )
 	GEggs.PlayerFile_WriteTable( self, pEggs )
 end
 
+-- Just a hook reminding players that they cannot discover easter eggs
+-- during an active TTT round, if that option is enabled.
 hook.Add( "TTTBeginRound", "GEggs_RoundReminder_TTTBeginRound", function()
 	if not GEggs.Config.TTT_ActiveRoundDisable then return end
+
 	for _, ply in pairs( player.GetAll() ) do
 		ply:GEggs_SendGenericMessage( "Reminder: easter egg discovery is disabled during rounds unless you are dead or spectating!" )
 	end
 end )
 
+-- Hook for checking chat messages for easter eggs.
 hook.Add( "PlayerSay", "GEggs_CheckChatForEgg_PlayerSay", function( ply, text, isteam )
 	if not IsValid( ply ) then return end
+	-- If TTT_ActiveRoundDisable is true then we only want to allow dead or
+	-- spectating players to find easter eggs if the round is currently active.
 	if GetConVar( "gamemode" ):GetString() == "terrortown" and GEggs.Config.TTT_ActiveRoundDisable and GetRoundState() == ROUND_ACTIVE and ply:Alive() and not ply:IsSpec() then return end
 
 	text = string.lower( text )
+
 	if table.HasValue( GEggs.Config.EggList, text ) then
 		ply:GEggs_DiscoverEgg( text )
+		-- Log the event to console.
 		MsgN( ply:Nick() .. " has found easter egg " .. text .. "!" )
 	end
 end )
 
+-- Hook to check if the player has requested their easter egg data.
 hook.Add( "PlayerSay", "GEggs_RequestDiscoveredEggs_PlayerSay", function( ply, text, isteam )
 	if not IsValid( ply ) then return end
 
@@ -133,5 +146,3 @@ hook.Add( "PlayerSay", "GEggs_RequestDiscoveredEggs_PlayerSay", function( ply, t
 		ply:GEggs_SendEggsList()
 	end
 end )
-
--- Created by bamq.
